@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { YH } from '@/services'
+import { YH, login, cacheUserInfo } from '@/services'
 
 export default {
   name: 'Home',
@@ -51,17 +51,27 @@ export default {
   },
 
   mounted () {
-    console.log(YH)
-    YH.callback.loginAppForJs = function (ticket) {
-      console.log(ticket)
+    this.from = this.$route.query.from
+    YH.callback.loginAppForJs = ticket => {
+      login(ticket).then(res => {
+        if (res.ret === 1) {
+          cacheUserInfo(res.data)
+          if (this.from) {
+            location.replace(this.from)
+          }
+        } else {
+          this.$toast(res.msg)
+        }
+      })
     }
-    YH.callback.showErrcode = function (errorMsg, errorcode) {
-      console.log(errorMsg)
+    YH.callback.showErrcode = (errorMsg, errorcode) => {
+      this.$toast(errorMsg)
     }
   },
 
   methods: {
     login () {
+      if (!this.loginname || !this.loginpwd) return
       YH.method.loginForJs(this.loginname, this.loginpwd, '001003076')
     }
   }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import store from '../store'
+import { isLogin } from '@/services'
 
 Vue.use(VueRouter)
 
@@ -86,11 +86,11 @@ const router = new VueRouter({
 
 // 注册全局路由守卫，进行登陆拦截
 router.beforeEach((to, from, next) => {
-  const { user } = store.state
+  const user = isLogin()
 
   // 路由需要登陆 且 未登陆
   if (to.meta.requireLogin && !user) {
-    next()
+    next('login?from=' + window.location.href)
   }
 
   next()

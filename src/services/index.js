@@ -1,4 +1,5 @@
 import axios from 'axios'
+import storage from '@/shared/storage'
 
 // 浙江政务登陆接口
 
@@ -150,4 +151,37 @@ export async function getProjectDetail (projectGuid) {
     projectGuid
   })
   return handleResult(res)
+}
+
+/**
+ * 登陆
+ * @param {String} ticket 票据
+ */
+export async function login (ticket) {
+  const res = await request.post('login', {
+    ticket
+  })
+  return handleResult(res)
+}
+
+/**
+ * 用户是否登陆
+ */
+const UserKey = 'cxzwfw-user'
+export function isLogin () {
+  const user = storage.get(UserKey)
+
+  if (user) {
+    return user
+  }
+
+  return false
+}
+
+/**
+ * 存储用户信息
+ * @param {Object} user 用户信息
+ */
+export function cacheUserInfo (user) {
+  return storage.set(UserKey, user)
 }

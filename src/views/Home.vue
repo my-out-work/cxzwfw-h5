@@ -54,7 +54,7 @@ export default {
     banner0 () {
       return {
         linkurl: this.banners[0]?.linkurl,
-        imgurl: '//wechat.nextdog.cc' + this.banners[0]?.imgurl
+        imgurl: this.banners[0]?.imgurl
       }
     }
   },
