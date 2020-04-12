@@ -171,6 +171,26 @@ export async function login (ticket) {
 }
 
 /**
+ * 微信授权
+ */
+export async function wxouath () {
+  const res = await request.get('login', {
+    params: {
+      from: window.location.href
+    }
+  })
+  return handleResult(res)
+}
+
+/**
+ * 微信授权
+ */
+export async function getWxUserInfo () {
+  const res = await request.get('wxUserInfo')
+  return handleResult(res)
+}
+
+/**
  * 用户是否登陆
  */
 const UserKey = 'cxzwfw-user'

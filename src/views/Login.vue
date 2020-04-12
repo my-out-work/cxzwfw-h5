@@ -53,16 +53,10 @@ export default {
   mounted () {
     this.from = this.$route.query.from
     YH.callback.loginAppForJs = ticket => {
-      login(ticket).then(res => {
-        if (res.ret === 1) {
-          cacheUserInfo(res.data)
-          if (this.from) {
-            location.replace(this.from)
-          }
-        } else {
-          this.$toast(res.msg)
-        }
-      })
+      this.autoLogin(ticket)
+    }
+    YH.callback.loginApp = ticket => {
+      this.autoLogin(ticket)
     }
     YH.callback.showErrcode = (errorMsg, errorcode) => {
       this.$toast(errorMsg)
@@ -73,6 +67,18 @@ export default {
     login () {
       if (!this.loginname || !this.loginpwd) return
       YH.method.loginForJs(this.loginname, this.loginpwd, '001003076')
+    },
+    autoLogin (ticket) {
+      login(ticket).then(res => {
+        if (res.code === 0) {
+          cacheUserInfo(res.data)
+          if (this.from) {
+            location.replace(this.from)
+          }
+        } else {
+          this.$toast(res.msg)
+        }
+      })
     }
   }
 }
