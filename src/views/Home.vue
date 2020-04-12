@@ -5,7 +5,7 @@
     </div>
     <div class="menu-wrap">
       <a v-for="(d, i) in cates" :key="i" class="menu" :href="d.linkurl">
-        <div class="menu-icon" :style="{ backgroundImage: `url(${d.imgUrl})` }"></div>
+        <div class="menu-icon" :style="{ backgroundImage: `url(${d.imgurl})` }"></div>
         <div class="menu-name">{{d.title}}</div>
       </a>
     </div>
@@ -15,7 +15,7 @@
         <a class="more" href="https://app.zjzwfw.gov.cn/wechat/wechat/phone/showMoreService.do?zjolTitleName=%E4%BE%BF%E6%B0%91%E6%9C%8D%E5%8A%A1">更多</a>
       </div>
       <a v-for="(d, i) in apps" :key="i" class="block br" :href="d.linkurl">
-        <div class="block-icon" :style="{ backgroundImage: `url(${d.imgUrl})` }"></div>
+        <div class="block-icon" :style="{ backgroundImage: `url(${d.imgurl})` }"></div>
         <div class="block-name">{{d.title}}</div>
       </a>
     </div>
