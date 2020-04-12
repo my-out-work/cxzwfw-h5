@@ -13,11 +13,30 @@ const styleInject = {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
+const publicPath = process.env.CDN_HOST + APP_NAME
+
+const localDir = process.env.LOCAL_DIR
 
 const plugins = []
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? `http://cdn.minjs.cn/${APP_NAME}` : './',
+  devServer: {
+    port: process.env.SERVER_PORT,
+    // 自动调用默认浏览器打开
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'http://' + process.env.PROXY_HOST,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+  },
+  // 输出目录
+  outputDir: localDir,
+  // 资源根目录
+  publicPath: isProd ? publicPath : './',
   // 自动化导入文件mixin到SFC
   pluginOptions: {
     ...styleInject
