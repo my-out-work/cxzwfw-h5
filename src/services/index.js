@@ -102,7 +102,7 @@ export async function getAppointQno (username, identitycardid, mobile, token) {
 // 内部接口
 
 const request = axios.create({
-  baseURL: '//wx.minjs.cc/cxzwfw/api/'
+  baseURL: '//wx.minjs.cn/cxzwfw/api/'
 })
 
 function handleResult (res) {
