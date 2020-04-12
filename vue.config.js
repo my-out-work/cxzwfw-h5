@@ -13,7 +13,7 @@ const styleInject = {
 }
 
 const isProd = process.env.NODE_ENV === 'production'
-const publicPath = process.env.CDN_HOST + APP_NAME
+const publicPath = 'http://' + process.env.CDN_HOST + '/' + APP_NAME
 
 const localDir = process.env.LOCAL_DIR
 
@@ -51,7 +51,7 @@ module.exports = {
           compiler.hooks.done.tap('Upload files', compilation => {
             const config = require('../config/cdn.config')
             config.remote += `/${APP_NAME}`
-            config.local = 'dist'
+            config.local = localDir
 
             const upload = new AutoUpload(config)
 
