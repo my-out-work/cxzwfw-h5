@@ -102,7 +102,7 @@ export async function getAppointQno (username, identitycardid, mobile, token) {
 // 内部接口
 
 const request = axios.create({
-  baseURL: '//wechat.nextdog.cc/partyjo-web/api/'
+  baseURL: '//wx.minjs.cc/cxzwfw/api/'
 })
 
 function handleResult (res) {
@@ -110,7 +110,7 @@ function handleResult (res) {
     return res.data
   }
   return {
-    ret: 0,
+    code: 1,
     msg: '服务器出错了'
   }
 }

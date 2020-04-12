@@ -43,7 +43,7 @@ export default {
     const { id } = this.$route.query
     if (id) {
       getProjectDetail(this.id).then(res => {
-        if (res.ret) {
+        if (res.code === 0) {
           this.data = res.data
         } else {
           this.$toast(res.msg)

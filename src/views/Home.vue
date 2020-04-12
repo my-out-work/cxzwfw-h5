@@ -61,22 +61,22 @@ export default {
 
   mounted () {
     getMenuList('banner').then(res => {
-      if (res.ret === 1) {
+      if (res.code === 0) {
         this.banners = res.data
       }
     })
     getMenuList('cate').then(res => {
-      if (res.ret === 1) {
+      if (res.code === 0) {
         this.cates = res.data
       }
     })
     getMenuList('app').then(res => {
-      if (res.ret === 1) {
+      if (res.code === 0) {
         this.apps = res.data
       }
     })
     getNewsList().then(res => {
-      if (res.ret === 1) {
+      if (res.code === 0) {
         this.news = res.data
       }
     })
