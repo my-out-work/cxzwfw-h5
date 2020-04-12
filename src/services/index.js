@@ -120,7 +120,9 @@ function handleResult (res) {
  * @param {String} type 区块类型
  */
 export async function getMenuList (type) {
-  const res = await request.post('getMenuList', { type })
+  const res = await request.get('getMenuList', {
+    params: { type }
+  })
   return handleResult(res)
 }
 
@@ -128,7 +130,7 @@ export async function getMenuList (type) {
  * 获取首页新闻
  */
 export async function getNewsList () {
-  const res = await request.post('getNewsList')
+  const res = await request.get('getNewsList')
   return handleResult(res)
 }
 
@@ -136,8 +138,10 @@ export async function getNewsList () {
  * 查询办事事件详情
  */
 export async function getProjectByFlowSN (flowSN) {
-  const res = await request.post('getProjectByFlowSN', {
-    flowSN
+  const res = await request.get('getProjectByFlowSN', {
+    params: {
+      flowSN
+    }
   })
   return handleResult(res)
 }
@@ -147,8 +151,10 @@ export async function getProjectByFlowSN (flowSN) {
  * @param {String} projectGuid 事件id
  */
 export async function getProjectDetail (projectGuid) {
-  const res = await request.post('getProjectDetail', {
-    projectGuid
+  const res = await request.get('getProjectDetail', {
+    params: {
+      projectGuid
+    }
   })
   return handleResult(res)
 }
