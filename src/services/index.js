@@ -57,6 +57,44 @@ function handleZWResult (res) {
 }
 
 /**
+ * 根据openid获取用户信息
+ */
+export async function wzUserDetailByOpenID (openid) {
+  const res = await post('/hzzwfwWxUser/wzUserDetailByOpenID', {
+    openid
+  })
+  return handleZWResult(res)
+}
+
+/**
+ * 注册微信用户
+ * username, mobile, password, idnum
+ */
+export async function wxUserRegister (options) {
+  const res = await post('/hzzwfwWxUser/wxUserRegister', options)
+  return handleZWResult(res)
+}
+
+/**
+ * 校验手机号是否绑定
+ */
+export async function checkPhoneExist (mobile) {
+  const res = await post('/zwdtRegister/checkPhoneExist', {
+    mobile
+  })
+  return handleZWResult(res)
+}
+
+/**
+ * 校验手机号是否绑定
+ * idnumormobile, password, openid, encodepassword
+ */
+export async function wxUserBind (options) {
+  const res = await post('/hzzwfwWxUser/wxUserBind', options)
+  return handleZWResult(res)
+}
+
+/**
  * 获取部门列表
  */
 export async function getHallList () {
