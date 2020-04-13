@@ -35,6 +35,8 @@ export default {
           const { data } = res
           if (data.custom && data.custom.themelist) {
             this.data = data.custom.themelist
+          } else {
+            this.$toast(data.custom.text)
           }
         } else {
           this.$toast(res.msg)

@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="block">
-      <router-link class="user-list" to="affaireappointdetail">
+      <router-link class="user-list" to="affairappointdetail">
         <i class="icon icon-sm icon-yuyuejilu i-l"></i>
         <span class="name">预约记录</span>
         <i class="icon icon-sm icon-youjiantou i-r"></i>

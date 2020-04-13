@@ -54,7 +54,7 @@ export default {
 
   mounted () {
     window.addEventListener('scroll', this.scroll)
-    this.loadData()
+    this.loadData(this.currentpage, this.pagesize)
   },
 
   beforeDestroy () {

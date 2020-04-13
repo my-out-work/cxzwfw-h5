@@ -13,11 +13,7 @@ export { default as YH } from './zjzw'
 let USER_TOKEN = ''
 
 const ajax = axios.create({
-  baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest',
-  headers: {
-    Accept: 'text/html;charset=utf-8',
-    Authorization: 'Bearer ' + USER_TOKEN
-  }
+  baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest'
 })
 
 const APP_TOKEN = 'Epoint_WebSerivce_**##0601'
@@ -27,9 +23,19 @@ const defaultOptions = {
 }
 
 function post (url, options = {}) {
-  return ajax.post(url, {
-    token: APP_TOKEN,
-    params: Object.assign(defaultOptions, options)
+  const params = Object.assign({}, defaultOptions, options)
+  console.log(params)
+  return ajax({
+    method: 'post',
+    url,
+    data: {
+      token: APP_TOKEN,
+      params
+    },
+    headers: {
+      Accept: 'text/html;charset=utf-8',
+      Authorization: 'Bearer ' + USER_TOKEN
+    }
   })
 }
 
