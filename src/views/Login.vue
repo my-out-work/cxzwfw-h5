@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { YH, login, cacheUserInfo } from '@/services'
+import { YH, login, setUserInfoToLocal } from '@/services'
 
 export default {
   name: 'Home',
@@ -71,7 +71,7 @@ export default {
     autoLogin (ticket) {
       login(ticket).then(res => {
         if (res.code === 0) {
-          cacheUserInfo(res.data)
+          setUserInfoToLocal(res.data)
           if (this.from) {
             location.replace(this.from)
           }

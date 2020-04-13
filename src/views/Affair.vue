@@ -31,8 +31,13 @@ export default {
     const { id } = this.$route.query
     if (id) {
       getHallThemes(id).then(res => {
-        if (res.custom && res.custom.themelist) {
-          this.data = res.custom.themelist
+        if (res.code === 0) {
+          const { data } = res
+          if (data.custom && data.custom.themelist) {
+            this.data = data.custom.themelist
+          }
+        } else {
+          this.$toast(res.msg)
         }
       })
     } else {

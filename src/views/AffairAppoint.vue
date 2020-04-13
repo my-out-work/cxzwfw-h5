@@ -1,13 +1,40 @@
 <template>
   <div>
     <div class="nav-hd">网上预约</div>
-    <ul id="j-main" class="date"></ul>
+    <ul id="j-main" class="date">
+      <li v-for="(d, i) in appointdatelist" :key="i" :class="{ active: i === tabSeleted }" @click="tabpick(i)">{{d.appointdate.substring(5,10)}}</li>
+    </ul>
     <div class="main">
-      <div id="j-wrap-0" class="time-wrap">无数据</div>
-      <div id="j-wrap-1" class="time-wrap" style="display: none;">无数据</div>
-      <div id="j-wrap-2" class="time-wrap" style="display: none;">无数据</div>
-      <div id="j-wrap-3" class="time-wrap" style="display: none;">无数据</div>
-      <div id="j-wrap-4" class="time-wrap" style="display: none;">无数据</div>
+      <div id="j-wrap-0" class="time-wrap">
+        <div v-for="(d, i) in appointdate[0]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+          <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
+          <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
+        </div>
+      </div>
+      <div id="j-wrap-1" class="time-wrap" style="display: none;">
+        <div v-for="(d, i) in appointdate[1]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+          <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
+          <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
+        </div>
+      </div>
+      <div id="j-wrap-2" class="time-wrap" style="display: none;">
+        <div v-for="(d, i) in appointdate[2]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+          <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
+          <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
+        </div>
+      </div>
+      <div id="j-wrap-3" class="time-wrap" style="display: none;">
+        <div v-for="(d, i) in appointdate[3]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+          <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
+          <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
+        </div>
+      </div>
+      <div id="j-wrap-4" class="time-wrap" style="display: none;">
+        <div v-for="(d, i) in appointdate[4]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+          <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
+          <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
+        </div>
+      </div>
     </div>
     <div class="main mh">
       <div class="title">注意事项</div>
@@ -18,12 +45,12 @@
         4. 申请人在约定日期、约定时间段未取号的，视为放弃预约，需重新预约。
       </div>
     </div>
-    <button class="btn appoint-btn" type="button">同意并预约</button>
+    <button class="btn appoint-btn" @click="addNo" type="button">同意并预约</button>
   </div>
 </template>
 
 <script>
-import { getAppointDate } from '@/services'
+import { getAppointDate, getAppointTime } from '@/services'
 
 export default {
   name: 'AffairAppoint',
@@ -32,20 +59,54 @@ export default {
 
   data () {
     return {
-      appointdatelist: []
+      id: 0,
+      appointdatelist: [],
+      appointdate: [],
+      tabSeleted: 0
     }
   },
 
   mounted () {
     const { id } = this.$route.query
+    this.id = id
     if (id) {
-      getAppointDate(id).then(res => {
-        if (res.custom && res.custom.appointdatelist) {
-          this.appointdatelist = res.custom.appointdatelist
+      getAppointDate().then(res => {
+        if (res.code === 0) {
+          const { data } = res
+          if (data.custom && data.custom.appointdatelist) {
+            this.appointdatelist = data.custom.appointdatelist
+            this.tabpick(0)
+          }
+        } else {
+          this.$toast(res.msg)
         }
       })
     } else {
       this.$toast('发生错误，返回重试')
+    }
+  },
+
+  methods: {
+    addNo () {
+      this.$toast('发生错误，返回重试')
+    },
+    tabpick (i) {
+      this.tabSeleted = i
+      if (this.appointdate[i]) return
+      this.getAppointTime(this.id, this.appointdatelist[i].appointdate, i)
+    },
+    getAppointTime (id, appointdate, i) {
+      getAppointTime(id, appointdate).then(res => {
+        if (res.code === 0) {
+          if (res.data.custom.code === 0) {
+            this.appointdate[i] = res.data.custom.appointtimelist
+          } else {
+            this.$toast(res.data.custom.text)
+          }
+        } else {
+          this.$toast(res.msg)
+        }
+      })
     }
   }
 }

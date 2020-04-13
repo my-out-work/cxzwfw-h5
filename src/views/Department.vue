@@ -30,8 +30,13 @@ export default {
 
   mounted () {
     getHallList().then(res => {
-      if (res.custom && res.custom.halllist) {
-        this.data = res.custom.halllist
+      if (res.code === 0) {
+        const { data } = res
+        if (data.custom && data.custom.halllist) {
+          this.data = data.custom.halllist
+        }
+      } else {
+        this.$toast(res.msg)
       }
     })
   }

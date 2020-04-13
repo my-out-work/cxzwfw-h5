@@ -6,7 +6,7 @@
       </div>
       <div class="affair-bd">
         <div class="affair-btns">
-          <router-link class="btn-l" :to="'affairapponit?id=' + d.themeguid">网上预约</router-link>
+          <router-link class="btn-l" :to="'affairappoint?id=' + d.themeguid">网上预约</router-link>
         </div>
       </div>
     </div>
@@ -31,8 +31,13 @@ export default {
     const { id } = this.$route.query
     if (id) {
       getChildThemes(id).then(res => {
-        if (res.custom && res.custom.themelist) {
-          this.data = res.custom.themelist
+        if (res.code === 0) {
+          const { data } = res
+          if (data.custom && data.custom.themelist) {
+            this.data = data.custom.themelist
+          }
+        } else {
+          this.$toast(res.msg)
         }
       })
     } else {

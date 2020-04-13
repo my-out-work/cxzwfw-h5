@@ -86,10 +86,10 @@ const router = new VueRouter({
 
 // 注册全局路由守卫，进行登陆拦截
 router.beforeEach((to, from, next) => {
-  const user = isLogin()
+  const token = isLogin()
 
   // 路由需要登陆 且 未登陆
-  if (to.meta.requireLogin && !user) {
+  if (to.meta.requireLogin && !token) {
     next('login?from=' + window.location.href)
   }
 

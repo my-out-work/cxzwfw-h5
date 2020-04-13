@@ -7,11 +7,20 @@ export { default as YH } from './zjzw'
 
 // 办事大厅接口
 
+/**
+ * 缓存用户token
+ */
+let USER_TOKEN = ''
+
 const ajax = axios.create({
-  baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest'
+  baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest',
+  headers: {
+    Accept: 'text/html;charset=utf-8',
+    Authorization: 'Bearer ' + USER_TOKEN
+  }
 })
 
-const token = 'Epoint_WebSerivce_**##0601'
+const APP_TOKEN = 'Epoint_WebSerivce_**##0601'
 
 const defaultOptions = {
   centerguid: '6bef18db-f0b8-49fd-9d39-e406ad6d5bd5'
@@ -19,18 +28,25 @@ const defaultOptions = {
 
 function post (url, options = {}) {
   return ajax.post(url, {
-    token,
+    token: APP_TOKEN,
     params: Object.assign(defaultOptions, options)
   })
 }
 
 function handleZWResult (res) {
-  if (res.status === 200 && res.data && res.data.status && res.status === 200) {
-    return res.data
+  console.log(res)
+  if (res.status === 200 && res.data && res.data.status && res.data.status.code === 200) {
+    return {
+      code: 0,
+      msg: 'success',
+      data: res.data
+    }
   }
+
   return {
-    ret: 0,
-    msg: '服务器出错了'
+    code: res.data.status.code || -1,
+    msg: res.data.status.text || '第三方服务器出错了',
+    data: ''
   }
 }
 
@@ -88,13 +104,24 @@ export async function getAppointTime (taskguid, appointdate) {
 /**
  * 创建预约订单
  */
-export async function getAppointQno (username, identitycardid, mobile, token) {
+export async function getAppointQno (username, identitycardid, mobile) {
   const res = await post('/hzqueueAppointment/private/getAppointQno', {
     username,
     identitycardid,
     mobile,
-    token,
     appointtype: 3
+  })
+  return handleZWResult(res)
+}
+
+/**
+ * 获取订单列表
+ */
+export async function getAppointList (currentpage, pagesize) {
+  const res = await post('/hzqueueAppointment/private/getAppointList', {
+    currentpage,
+    pagesize,
+    type: 2
   })
   return handleZWResult(res)
 }
@@ -194,20 +221,32 @@ export async function getWxUserInfo () {
  * 用户是否登陆
  */
 const UserKey = 'cxzwfw-user'
-export function isLogin () {
-  const user = storage.get(UserKey)
+const UserToken = 'cxzwfw-user-token'
 
-  if (user) {
-    return user
+export function isLogin () {
+  const token = storage.get(UserToken)
+
+  if (token) {
+    return token
   }
 
   return false
 }
 
 /**
- * 存储用户信息
- * @param {Object} user 用户信息
+ * 存储本地用户信息
+ * @param {Object} data 用户信息
  */
-export function cacheUserInfo (user) {
-  return storage.set(UserKey, user)
+export function setUserInfoToLocal (data) {
+  const { user, token } = data
+  USER_TOKEN = token
+  storage.set(UserKey, user)
+  storage.set(UserToken, token)
+}
+
+/**
+ * 获取本地用户信息
+ */
+export function getUserInfoFromLocal () {
+  return storage.set(UserKey)
 }
