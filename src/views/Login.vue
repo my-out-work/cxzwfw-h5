@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { YH, login, setUserInfoToLocal } from '@/services'
+import { YH, login, setUserInfoToLocal, wxouath, getWxUserInfo, checkPhoneExist } from '@/services'
 
 export default {
   name: 'Home',
@@ -46,11 +46,19 @@ export default {
   data () {
     return {
       loginname: '',
-      loginpwd: ''
+      loginpwd: '',
+      wxUserInfo: null
     }
   },
 
   mounted () {
+    getWxUserInfo().then(res => {
+      if (res.code === 0) {
+        this.wxUserInfo = res.data
+      } else {
+        wxouath()
+      }
+    })
     this.from = this.$route.query.from
     YH.callback.loginAppForJs = ticket => {
       this.autoLogin(ticket)
@@ -72,12 +80,18 @@ export default {
       login(ticket).then(res => {
         if (res.code === 0) {
           setUserInfoToLocal(res.data)
+          this.checkPhoneExist(res.data.mobile)
           if (this.from) {
             location.replace(this.from)
           }
         } else {
           this.$toast(res.msg)
         }
+      })
+    },
+    checkPhoneExist (mobile) {
+      checkPhoneExist(mobile).then(res => {
+
       })
     }
   }
