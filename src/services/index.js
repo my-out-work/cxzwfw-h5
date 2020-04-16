@@ -271,7 +271,7 @@ export async function login (ticket) {
 export async function wxouath () {
   const res = await request.get('wxoauth', {
     params: {
-      from: encodeURIComponent(window.location.href)
+      from: window.location.href
     }
   })
   return handleResult(res)
