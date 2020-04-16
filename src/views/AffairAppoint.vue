@@ -92,7 +92,7 @@ export default {
 
   methods: {
     addNo () {
-      const appointtime = this.appointtimelist[this.appointdateIndex].fitter(item => item.picked === true)
+      const appointtime = this.appointtimelist[this.appointdateIndex].filter(item => item.picked === true)
 
       if (appointtime.length < 2) return
 
