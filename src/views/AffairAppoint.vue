@@ -6,31 +6,31 @@
     </ul>
     <div class="main">
       <div id="j-wrap-0" class="time-wrap">
-        <div v-for="(d, i) in appointdate[0]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+        <div @click="timepick(0, i)" v-for="(d, i) in appointtimelist[0]" :key="i" :class="{'time-picker': true, active: isTimePick(0, i) }">
           <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
           <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
         </div>
       </div>
       <div id="j-wrap-1" class="time-wrap" style="display: none;">
-        <div v-for="(d, i) in appointdate[1]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+        <div @click="timepick(1, i)" v-for="(d, i) in appointtimelist[1]" :key="i" :class="{'time-picker': true, active: isTimePick(1, i) }">
           <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
           <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
         </div>
       </div>
       <div id="j-wrap-2" class="time-wrap" style="display: none;">
-        <div v-for="(d, i) in appointdate[2]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+        <div @click="timepick(2, i)" v-for="(d, i) in appointtimelist[2]" :key="i" :class="{'time-picker': true, active: isTimePick(2, i) }">
           <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
           <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
         </div>
       </div>
       <div id="j-wrap-3" class="time-wrap" style="display: none;">
-        <div v-for="(d, i) in appointdate[3]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+        <div @click="timepick(3, i)" v-for="(d, i) in appointtimelist[3]" :key="i" :class="{'time-picker': true, active: isTimePick(3, i) }">
           <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
           <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
         </div>
       </div>
       <div id="j-wrap-4" class="time-wrap" style="display: none;">
-        <div v-for="(d, i) in appointdate[4]" :key="i" :class="{'time-picker': true, active: i === 0 }">
+        <div @click="timepick(4, i)" v-for="(d, i) in appointtimelist[4]" :key="i" :class="{'time-picker': true, active: isTimePick(4, i) }">
           <span class="time">{{d.appointtimestart + '-' + d.appointtimeend}}</span>
           <span class="num">余号：{{d.appointmaxsum - d.appointsum}}</span>
         </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getAppointDate, getAppointTime } from '@/services'
+import { getAppointDate, getAppointTime, getAppointQno, getWxUser } from '@/services'
 
 export default {
   name: 'AffairAppoint',
@@ -61,8 +61,12 @@ export default {
     return {
       id: 0,
       appointdatelist: [],
-      appointdate: [],
-      tabSeleted: 0
+      appointtimelist: [],
+      tabSeleted: 0,
+      appointdate: null,
+      appointdateIndex: 0,
+      appointtime: [],
+      times: []
     }
   },
 
@@ -88,18 +92,42 @@ export default {
 
   methods: {
     addNo () {
+      const appointtime = this.appointtimelist[this.appointdateIndex].fitter(item => item.picked === true)
+
+      if (appointtime.length < 2) return
+
+      const appointtimestart = appointtime[0]
+      const appointtimeend = appointtime[1]
+
+      const wxUser = getWxUser()
+
+      const d = {
+        taskguid: this.id,
+        appointdate: this.appointdate,
+        appointtimestart,
+        appointtimeend,
+        identitycardid: wxUser.idnum,
+        username: wxUser.username,
+        mobile: wxUser.mobile
+      }
+
+      getAppointQno(d).then(res => {
+        location.href = 'affairappointdetail?id=' + this.id
+      })
       this.$toast('发生错误，返回重试')
     },
     tabpick (i) {
       this.tabSeleted = i
-      if (this.appointdate[i]) return
-      this.getAppointTime(this.id, this.appointdatelist[i].appointdate, i)
+      if (this.appointtimelist[i]) return
+      this.appointdate = this.appointdatelist[i].appointdate
+      this.appointdateIndex = i
+      this.getAppointTime(this.id, this.appointdate, i)
     },
     getAppointTime (id, appointdate, i) {
       getAppointTime(id, appointdate).then(res => {
         if (res.code === 0) {
-          if (res.data.custom.code === 0) {
-            this.appointdate[i] = res.data.custom.appointtimelist
+          if (res.data.custom.code !== 0) {
+            this.appointtimelist[i] = res.data.custom.appointtimelist
           } else {
             this.$toast(res.data.custom.text)
           }
@@ -107,6 +135,27 @@ export default {
           this.$toast(res.msg)
         }
       })
+    },
+
+    timepick (i, j) {
+      const pick = i + '-' + j
+      const index = this.times.findIndex(x => x === pick)
+      if (index !== -1) {
+        this.times.slice(index, 1)
+        this.appointtime[i][j].picked = false
+
+        return
+      }
+
+      if (this.times.length > 2) return
+
+      this.times.push(pick)
+      this.appointtime[i][j].picked = true
+    },
+
+    isTimePick (i, j) {
+      const pick = i + '-' + j
+      return this.times.findIndex(x => x === pick) !== -1
     }
   }
 }

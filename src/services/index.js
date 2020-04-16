@@ -171,14 +171,13 @@ export async function getAppointTime (taskguid, appointdate) {
 
 /**
  * 创建预约订单
+ * username, identitycardid, mobile
  */
-export async function getAppointQno (username, identitycardid, mobile) {
-  const res = await post('/hzqueueAppointment/private/getAppointQno', {
-    username,
-    identitycardid,
-    mobile,
+export async function getAppointQno (options) {
+  options = Object.assign(options, {
     appointtype: 3
   })
+  const res = await post('/hzqueueAppointment/private/getAppointQno', options)
   return handleZWResult(res)
 }
 
