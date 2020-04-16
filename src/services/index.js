@@ -7,12 +7,6 @@ export { default as YH } from './zjzw'
 
 // 办事大厅接口
 
-/**
- * 缓存用户token
- */
-const WX_USER_INFO = getWxUser()
-const USER_TOKEN = WX_USER_INFO ? WX_USER_INFO.token : ''
-
 const ajax = axios.create({
   baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest'
 })
@@ -25,7 +19,8 @@ const defaultOptions = {
 
 function post (url, options = {}) {
   const params = Object.assign({}, defaultOptions, options)
-  console.log(params)
+  const WX_USER_INFO = getWxUser()
+  const USER_TOKEN = WX_USER_INFO ? WX_USER_INFO.token : ''
   return ajax({
     method: 'post',
     url,
@@ -276,7 +271,7 @@ export async function login (ticket) {
 export async function wxouath () {
   const res = await request.get('login', {
     params: {
-      from: window.location.href
+      from: encodeURIComponent(window.location.href)
     }
   })
   return handleResult(res)

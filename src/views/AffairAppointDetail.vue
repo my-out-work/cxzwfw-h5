@@ -2,7 +2,8 @@
   <div>
     <div class="nav-hd">预约记录</div>
     <div id="j-main" class="container">
-      <div v-for="d in data" :key="d.queueguid" class="at-wrap">
+      <div v-if="data.length">
+        <div v-for="d in data" :key="d.queueguid" class="at-wrap">
         <div class="at-detail">
           <div class="name">票码</div>
           <div class="info">{{d.queueguid}}</div>
@@ -32,6 +33,8 @@
           <div class="info">{{d.status == 1 ? '已取号' : '过号'}}</div>
         </div>
       </div>
+      </div>
+      <div v-else>暂无信息</div>
     </div>
   </div>
 </template>
@@ -76,7 +79,10 @@ export default {
     async loadData (currentpage, pagesize) {
       const res = await getAppointList(currentpage, pagesize)
       if (res.code === 0) {
-
+        const { custom } = res.data
+        if (custom.appointdatelist && custom.appointdatelist.length) {
+          this.data = this.data.concat(custom.appointdatelist)
+        }
       } else {
         this.$toast(res.msg)
       }
