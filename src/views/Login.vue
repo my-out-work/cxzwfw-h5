@@ -36,7 +36,8 @@
 </template>
 
 <script>
-import { YH, login, setUserInfoToLocal, wxouath, getWxUserInfo, checkPhoneExist } from '@/services'
+import { YH, login, getWxUser, setWxUser, wxUserRegister, wxUserBind, wzUserDetailByOpenID, setUserInfoToLocal, wxouath, getWxUserInfo, checkPhoneExist, getUserInfoFromLocal } from '@/services'
+// import encode from '@/shared/encode'
 
 export default {
   name: 'Home',
@@ -55,6 +56,18 @@ export default {
     getWxUserInfo().then(res => {
       if (res.code === 0) {
         this.wxUserInfo = res.data
+        const wxUser = getWxUser()
+        if (wxUser) {
+          this.back()
+          return
+        }
+
+        wzUserDetailByOpenID(this.wxUserInfo.openid).then(res => {
+          if (res.code === 0) {
+            setWxUser(res.data.custom)
+            this.back()
+          }
+        })
       } else {
         wxouath()
       }
@@ -76,14 +89,16 @@ export default {
       if (!this.loginname || !this.loginpwd) return
       YH.method.loginForJs(this.loginname, this.loginpwd, '001003076')
     },
+    back () {
+      if (this.from) {
+        location.replace(this.from)
+      }
+    },
     autoLogin (ticket) {
       login(ticket).then(res => {
         if (res.code === 0) {
-          setUserInfoToLocal(res.data)
+          setUserInfoToLocal(res.data.user)
           this.checkPhoneExist(res.data.mobile)
-          if (this.from) {
-            location.replace(this.from)
-          }
         } else {
           this.$toast(res.msg)
         }
@@ -91,7 +106,31 @@ export default {
     },
     checkPhoneExist (mobile) {
       checkPhoneExist(mobile).then(res => {
-
+        if (res.code === 0) {
+          if (res.data.custom.code !== 0) {
+            const appUser = getUserInfoFromLocal()
+            wxUserRegister({
+              username: appUser.username,
+              mobile: this.loginname,
+              password: this.loginpwd,
+              idnum: appUser.idnum
+            }).then(res => {
+              console.log(res)
+              if (res.code === 0) {
+                wxUserBind({
+                  idnumormobile: this.loginname,
+                  openid: this.wxUserInfo.openid,
+                  password: this.loginpwd,
+                  encodepassword: encodeURI(this.loginpwd)
+                }).then(res => {
+                  console.log(res)
+                })
+              }
+            })
+          }
+        } else {
+          this.$toast(res.msg)
+        }
       })
     }
   }

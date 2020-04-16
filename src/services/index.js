@@ -10,7 +10,8 @@ export { default as YH } from './zjzw'
 /**
  * 缓存用户token
  */
-let USER_TOKEN = ''
+const WX_USER_INFO = getWxUser()
+const USER_TOKEN = WX_USER_INFO ? WX_USER_INFO.token : ''
 
 const ajax = axios.create({
   baseURL: 'https://yc.huzhou.gov.cn:8088/wsdt/rest'
@@ -35,7 +36,9 @@ function post (url, options = {}) {
     headers: {
       Accept: 'text/html;charset=utf-8',
       Authorization: 'Bearer ' + USER_TOKEN
-    }
+    },
+    dataType: 'json',
+    contentType: 'application/json;charset=UTF-8'
   })
 }
 
@@ -57,6 +60,17 @@ function handleZWResult (res) {
 }
 
 /**
+ * 获取浙报APP用户信息
+ * @param {String} ticket 中心guid
+ */
+export async function getUserinfo (ticket) {
+  const res = await post('hzqueueAppointment/getUserinfo', {
+    ticket
+  })
+  return handleZWResult(res)
+}
+
+/**
  * 根据openid获取用户信息
  */
 export async function wzUserDetailByOpenID (openid) {
@@ -64,6 +78,21 @@ export async function wzUserDetailByOpenID (openid) {
     openid
   })
   return handleZWResult(res)
+}
+
+const WxUser = 'cxzwfw-wxuser'
+/**
+ * 设置本地用户token
+ */
+export function setWxUser (token) {
+  return storage.set(WxUser, token)
+}
+
+/**
+ * 获取本地用户token
+ */
+export function getWxUser () {
+  return storage.get(WxUser)
 }
 
 /**
@@ -86,7 +115,7 @@ export async function checkPhoneExist (mobile) {
 }
 
 /**
- * 校验手机号是否绑定
+ * 用户绑定微信
  * idnumormobile, password, openid, encodepassword
  */
 export async function wxUserBind (options) {
@@ -257,6 +286,15 @@ export async function wxouath () {
  * 微信授权
  */
 export async function getWxUserInfo () {
+  if (process.env.NODE_ENV === 'development') {
+    return {
+      code: 0,
+      data: {
+        openid: 'o9-y-0zpSkPbcDqRpUel0kK50Adc',
+        nickname: 'test'
+      }
+    }
+  }
   const res = await request.get('wxUserInfo')
   return handleResult(res)
 }
@@ -265,10 +303,9 @@ export async function getWxUserInfo () {
  * 用户是否登陆
  */
 const UserKey = 'cxzwfw-user'
-const UserToken = 'cxzwfw-user-token'
 
 export function isLogin () {
-  const token = storage.get(UserToken)
+  const token = storage.get(UserKey)
 
   if (token) {
     return token
@@ -282,15 +319,14 @@ export function isLogin () {
  * @param {Object} data 用户信息
  */
 export function setUserInfoToLocal (data) {
-  const { user, token } = data
-  USER_TOKEN = token
-  storage.set(UserKey, user)
-  storage.set(UserToken, token)
+  if (data) {
+    storage.set(UserKey, data)
+  }
 }
 
 /**
  * 获取本地用户信息
  */
 export function getUserInfoFromLocal () {
-  return storage.set(UserKey)
+  return storage.get(UserKey)
 }

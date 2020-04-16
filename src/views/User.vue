@@ -40,9 +40,8 @@ export default {
   async mounted () {
     const res = await getWxUserInfo()
     if (res.code === 0) {
-      const { user, token } = res.data
+      const user = res.data
       if (user) this.user = user
-      if (token) this.token = token
     }
   }
 }
