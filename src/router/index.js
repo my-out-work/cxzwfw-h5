@@ -90,7 +90,7 @@ router.beforeEach((to, from, next) => {
 
   // 路由需要登陆 且 未登陆
   if (to.meta.requireLogin && !wxUser) {
-    next('login?from=' + encodeURIComponent('window.location.href'))
+    next('login?from=' + encodeURIComponent(window.location.href))
   }
 
   next()
