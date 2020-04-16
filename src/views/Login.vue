@@ -69,7 +69,11 @@ export default {
           }
         })
       } else {
-        wxouath()
+        wxouath().then(res => {
+          if (res.code === 0) {
+            location.href = res.data
+          }
+        })
       }
     })
     this.from = this.$route.query.from

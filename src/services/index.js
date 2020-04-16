@@ -269,7 +269,7 @@ export async function login (ticket) {
  * 微信授权
  */
 export async function wxouath () {
-  const res = await request.get('login', {
+  const res = await request.get('wxoauth', {
     params: {
       from: encodeURIComponent(window.location.href)
     }
