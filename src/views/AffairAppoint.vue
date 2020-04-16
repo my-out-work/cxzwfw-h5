@@ -112,7 +112,7 @@ export default {
       }
 
       getAppointQno(d).then(res => {
-        location.href = 'affairappointdetail?id=' + this.id
+        this.$route.push('/affairappointdetail?id=' + this.id)
       })
       this.$toast('发生错误，返回重试')
     },
