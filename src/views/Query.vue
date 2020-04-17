@@ -32,7 +32,7 @@ export default {
     getProjectByFlowSN () {
       getProjectByFlowSN(this.id).then(res => {
         if (res.code === 0) {
-          this.$route.push('/querydetail?id=' + res.data.ProjectGuid)
+          this.$route.push('querydetail?id=' + res.data.ProjectGuid)
         } else {
           this.$toast(res.msg)
         }

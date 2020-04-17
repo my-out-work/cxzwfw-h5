@@ -19,7 +19,7 @@
 
 <script>
 import defaultImg from '../img/icon/gerentouxiang.png'
-import { getWxUserInfo } from '@/services'
+import { getWxUserInfo, wxouath } from '@/services'
 
 export default {
   name: 'User',
@@ -42,6 +42,12 @@ export default {
     if (res.code === 0) {
       const user = res.data
       if (user) this.user = user
+    } else {
+      wxouath().then(res => {
+        if (res.code === 0) {
+          location.href = res.data
+        }
+      })
     }
   }
 }
