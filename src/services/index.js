@@ -234,7 +234,7 @@ export async function getNewsList () {
 export async function getProjectByFlowSN (flowSN) {
   const res = await request.get('getProjectByFlowSN', {
     params: {
-      flowSN
+      id: flowSN
     }
   })
   return handleResult(res)
@@ -247,7 +247,7 @@ export async function getProjectByFlowSN (flowSN) {
 export async function getProjectDetail (projectGuid) {
   const res = await request.get('getProjectDetail', {
     params: {
-      projectGuid
+      id: projectGuid
     }
   })
   return handleResult(res)
