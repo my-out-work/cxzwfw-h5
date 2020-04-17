@@ -55,6 +55,28 @@ function handleZWResult (res) {
 }
 
 /**
+ * 查询办事事件详情
+ * @param {String} FlowSN 订单号
+ */
+export async function getProjectByFlowSN (FlowSN) {
+  const res = await post('hzqueueAppointment/getProjectByFlowSN', {
+    FlowSN
+  })
+  return handleZWResult(res)
+}
+
+/**
+ * 查询办事详情
+ * @param {String} ProjectGuid 事件id
+ */
+export async function getProjectDetail (ProjectGuid) {
+  const res = await post('hzqueueAppointment/getProjectDetail', {
+    ProjectGuid
+  })
+  return handleZWResult(res)
+}
+
+/**
  * 获取浙报APP用户信息
  * @param {String} ticket 中心guid
  */
@@ -225,31 +247,6 @@ export async function getMenuList (type) {
  */
 export async function getNewsList () {
   const res = await request.get('getNewsList')
-  return handleResult(res)
-}
-
-/**
- * 查询办事事件详情
- */
-export async function getProjectByFlowSN (flowSN) {
-  const res = await request.get('getProjectByFlowSN', {
-    params: {
-      id: flowSN
-    }
-  })
-  return handleResult(res)
-}
-
-/**
- * 查询办事详情
- * @param {String} projectGuid 事件id
- */
-export async function getProjectDetail (projectGuid) {
-  const res = await request.get('getProjectDetail', {
-    params: {
-      id: projectGuid
-    }
-  })
   return handleResult(res)
 }
 
