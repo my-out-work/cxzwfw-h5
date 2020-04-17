@@ -59,7 +59,7 @@ function handleZWResult (res) {
  * @param {String} FlowSN 订单号
  */
 export async function getProjectByFlowSN (FlowSN) {
-  const res = await post('hzqueueAppointment/getProjectByFlowSN', {
+  const res = await post('/hzqueueAppointment/AuditProject/GetProjectByFlowSN', {
     FlowSN
   })
   return handleZWResult(res)
@@ -70,7 +70,7 @@ export async function getProjectByFlowSN (FlowSN) {
  * @param {String} ProjectGuid 事件id
  */
 export async function getProjectDetail (ProjectGuid) {
-  const res = await post('hzqueueAppointment/getProjectDetail', {
+  const res = await post('/hzqueueAppointment/AuditProject/getProjectDetail', {
     ProjectGuid
   })
   return handleZWResult(res)
@@ -81,7 +81,7 @@ export async function getProjectDetail (ProjectGuid) {
  * @param {String} ticket 中心guid
  */
 export async function getUserinfo (ticket) {
-  const res = await post('hzqueueAppointment/getUserinfo', {
+  const res = await post('/hzqueueAppointment/getUserinfo', {
     ticket
   })
   return handleZWResult(res)
